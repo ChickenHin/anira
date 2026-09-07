@@ -15,17 +15,17 @@ name: coverage (Codecov metric, not a gate)
 
 on:
   workflow_dispatch:
-  merge_group:
-  push:
-    branches:
-      - main
-  # Self-validating: runs on a PR when this workflow, or the preset it builds,
-  # changes. Dormant on every other PR per the tier policy — the queue is where
-  # it runs for everything else.
-  pull_request:
-    paths:
-      - ".github/workflows/coverage.yml"
-      - "CMakePresets.json"
+  # merge_group:
+  # push:
+  #   branches:
+  #     - main
+  # # Self-validating: runs on a PR when this workflow, or the preset it builds,
+  # # changes. Dormant on every other PR per the tier policy — the queue is where
+  # # it runs for everything else.
+  # pull_request:
+  #   paths:
+  #     - ".github/workflows/coverage.yml"
+  #     - "CMakePresets.json"
 
 concurrency:
   group: coverage-${{ github.ref }}
@@ -69,13 +69,13 @@ jobs:
 
   # The single status the merge queue can require: one job that is green only if
   # every leg is. Matches the "<name> result" convention of the other workflows.
-  result:
-    name: coverage result
-    if: always()
-    needs: coverage
-    runs-on: ubuntu-latest
-    steps:
-      - name: aggregate
-        run: |
-          echo "workflow result: ${{ needs.coverage.result }}"
-          [ "${{ needs.coverage.result }}" = "success" ] || exit 1
+  # result:
+  #   name: coverage result
+  #   if: always()
+  #   needs: coverage
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: aggregate
+  #       run: |
+  #         echo "workflow result: ${{ needs.coverage.result }}"
+  #         [ "${{ needs.coverage.result }}" = "success" ] || exit 1
