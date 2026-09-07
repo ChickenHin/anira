@@ -7,9 +7,9 @@ name: warm caches (feeds PR and queue builds)
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
 
 concurrency:
   group: warm_caches-${{ github.ref }}
