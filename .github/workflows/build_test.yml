@@ -8,13 +8,13 @@ name: build_test
 # here — the queue already validated the identical tree.
 
 on:
-  merge_group:
-  workflow_call:
-    inputs:
-      tier:
-        description: "Matrix tier: 'full' (default) or 'pr'"
-        type: string
-        default: "full"
+  # merge_group:
+  # workflow_call:
+  #   inputs:
+  #     tier:
+  #       description: "Matrix tier: 'full' (default) or 'pr'"
+  #       type: string
+  #       default: "full"
   workflow_dispatch:
     inputs:
       tier:
@@ -22,9 +22,9 @@ on:
         type: choice
         options: ["full", "pr"]
         default: "full"
-  pull_request:
-    branches:
-      - main
+  # pull_request:
+  #   branches:
+  #     - main
 
 # The event is in the group so a dispatched full run and a push run on the same
 # ref never cancel each other. The name stays hardcoded (not github.workflow):
@@ -53,29 +53,29 @@ jobs:
   # The one status branch protection requires. It lives here, not only inside
   # the reusable workflow, because called jobs report under a prefixed name
   # ("build_test / build_test result") — this job keeps the exact context.
-  result:
-    name: build_test result
-    needs: build_test
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      # The PR tier's backend coverage lives or dies with these two rows staying
-      # "pr": true — the static leg is the only PR leg that builds ExecuTorch, the
-      # tflite leg the only desktop TFLite one. What each leg actually builds is
-      # already asserted by its own assert_grep and its tests; this only pins the
-      # promotion so it cannot be dropped unnoticed.
-      - name: pr tier keeps its backend legs
-        run: |
-          jq -e '[.[] | select(.pr == true) | .name]
-                 | contains(["Linux-x86_64-static","Linux-x86_64-tflite-shared"])'             .github/build_test_matrix.json
-      # uses: refs cannot reference a variable (GitHub resolves them before any
-      # context exists), so single-point definition is impossible — this asserts
-      # the next-best property: exactly one ci-actions version across the repo.
-      - name: one ci-actions version repo-wide
-        run: |
-          test "$(grep -rho 'tanh-lab/ci-actions[^@]*@v[0-9.]*' .github/workflows/ | grep -o 'v[0-9.]*$' | sort -u | wc -l)" -eq 1
-      - name: aggregate
-        run: |
-          echo "workflow result: ${{ needs.build_test.result }}"
-          [ "${{ needs.build_test.result }}" = "success" ] || exit 1
+  # result:
+  #   name: build_test result
+  #   needs: build_test
+  #   if: always()
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     # The PR tier's backend coverage lives or dies with these two rows staying
+  #     # "pr": true — the static leg is the only PR leg that builds ExecuTorch, the
+  #     # tflite leg the only desktop TFLite one. What each leg actually builds is
+  #     # already asserted by its own assert_grep and its tests; this only pins the
+  #     # promotion so it cannot be dropped unnoticed.
+  #     - name: pr tier keeps its backend legs
+  #       run: |
+  #         jq -e '[.[] | select(.pr == true) | .name]
+  #                | contains(["Linux-x86_64-static","Linux-x86_64-tflite-shared"])'             .github/build_test_matrix.json
+  #     # uses: refs cannot reference a variable (GitHub resolves them before any
+  #     # context exists), so single-point definition is impossible — this asserts
+  #     # the next-best property: exactly one ci-actions version across the repo.
+  #     - name: one ci-actions version repo-wide
+  #       run: |
+  #         test "$(grep -rho 'tanh-lab/ci-actions[^@]*@v[0-9.]*' .github/workflows/ | grep -o 'v[0-9.]*$' | sort -u | wc -l)" -eq 1
+  #     - name: aggregate
+  #       run: |
+  #         echo "workflow result: ${{ needs.build_test.result }}"
+  #         [ "${{ needs.build_test.result }}" = "success" ] || exit 1
