@@ -3,15 +3,15 @@ name: build_docs_and_deploy
 on:
   # PR runs are stubs: only the result job reports (queue entry requires it);
   # the real jobs run in the merge queue.
-  pull_request:
-    branches:
-      - main
-  merge_group:
-  workflow_call:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
+  # pull_request:
+  #   branches:
+  #     - main
+  # merge_group:
+  # workflow_call:
+  # workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
